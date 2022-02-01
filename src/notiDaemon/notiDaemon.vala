@@ -8,6 +8,8 @@ namespace SwayNotificatonCenter {
         public CcDaemon ccDaemon;
         public NotiWindow notiWindow;
 
+        private NotiPlayer notiPlayer;
+
         public NotiDaemon () {
             this.ccDaemon = new CcDaemon (this);
             Bus.own_name (BusType.SESSION, "org.erikreider.swaync.cc",
@@ -21,6 +23,8 @@ namespace SwayNotificatonCenter {
             });
 
             this.notiWindow = new NotiWindow ();
+
+            this.notiPlayer = new NotiPlayer ();
         }
 
         private void on_cc_bus_aquired (DBusConnection conn) {
@@ -99,6 +103,7 @@ namespace SwayNotificatonCenter {
                 "body-images",
                 "body-hyperlinks",
                 "persistence",
+                "sound",
             };
             return capabilities;
         }
@@ -148,8 +153,10 @@ namespace SwayNotificatonCenter {
                     notiWindow.add_notification (param, this);
                 }
             }
+            if (!dnd || param.urgency == UrgencyLevels.CRITICAL && ConfigModel.dnd_play_urgent_sound) {
+                notiPlayer.play_sound (param);
+            }
             ccDaemon.controlCenter.add_notification (param, this);
-
 
             return id;
         }
