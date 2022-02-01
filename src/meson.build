@@ -41,6 +41,7 @@ app_deps = [
   dependency('gtk+-3.0', version: '>= 3.22'),
   dependency('json-glib-1.0', version: '>= 1.0'),
   dependency('libhandy-1', version: '>= 1.2.0'),
+  dependency('libcanberra', version: '>= 0.30'),
   meson.get_compiler('c').find_library('gtk-layer-shell'),
   meson.get_compiler('c').find_library('m', required : true),
 ]
