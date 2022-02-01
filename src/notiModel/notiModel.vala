@@ -63,6 +63,9 @@ namespace SwayNotificatonCenter {
         public string category { get; set; }
         public bool resident { get; set; }
         public UrgencyLevels urgency { get; set; }
+        public string sound_file { get; set; }
+        public string sound_name { get; set; }
+        public bool suppress_sound { get; set; }
 
         public Action[] actions { get; set; }
 
@@ -164,6 +167,21 @@ namespace SwayNotificatonCenter {
                     case "urgency":
                         if (hint_value.is_of_type (GLib.VariantType.BYTE)) {
                             urgency = UrgencyLevels.from_value (hint_value.get_byte ());
+                        }
+                        break;
+                    case "sound-file":
+                        if (hint_value.is_of_type (GLib.VariantType.STRING)) {
+                            sound_file = hint_value.get_string ();
+                        }
+                        break;
+                    case "sound-name":
+                        if (hint_value.is_of_type (GLib.VariantType.STRING)) {
+                            sound_name = hint_value.get_string ();
+                        }
+                        break;
+                    case "suppress-sound":
+                        if (hint_value.is_of_type (GLib.VariantType.BOOLEAN)) {
+                            suppress_sound = hint_value.get_boolean ();
                         }
                         break;
                 }
