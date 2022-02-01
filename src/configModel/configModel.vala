@@ -196,6 +196,9 @@ namespace SwayNotificatonCenter {
             }
         }
 
+        /** Whether sounds for urgent notifications should be played when dnd is active or not */
+        public bool dnd_play_urgent_sound { get; set; default = true; }
+
         /* Methods */
 
         /**

@@ -89,6 +89,11 @@
             "type": "boolean",
             "description": "Hides the control center when clicking on notification action",
             "default": true
+        },
+        "dnd-play-urgent-sound": {
+            "type": "boolean",
+            "description": "If sound for urgent notifications should be played when Do Not Disturb is active",
+            "default": true
         }
     }
 }

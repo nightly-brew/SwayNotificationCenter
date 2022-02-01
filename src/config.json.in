@@ -14,5 +14,6 @@
   "image-visibility": "always",
   "transition-time": 200,
   "hide-on-clear": false,
-  "hide-on-action": true
+  "hide-on-action": true,
+  "dnd-play-urgent-sound": true
 }
