@@ -33,6 +33,7 @@ app_sources = [
   'controlCenter/controlCenter.vala',
   'controlCenter/topAction/topAction.vala',
   'functions.vala',
+  'notiPlayer/notiPlayer.vala',
   constants,
 ]
 
