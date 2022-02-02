@@ -153,7 +153,7 @@ namespace SwayNotificatonCenter {
                     notiWindow.add_notification (param, this);
                 }
             }
-            if (!dnd || param.urgency == UrgencyLevels.CRITICAL && ConfigModel.dnd_play_urgent_sound) {
+            if (!dnd || param.urgency == UrgencyLevels.CRITICAL && ConfigModel.instance.dnd_play_urgent_sound) {
                 notiPlayer.play_sound (param);
             }
             ccDaemon.controlCenter.add_notification (param, this);
