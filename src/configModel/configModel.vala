@@ -26,6 +26,11 @@ namespace SwayNotificatonCenter {
         }
     }
 
+    public class Category : Object {
+        public string sound_file { get; set; }
+        public string icon_name { get; set; }
+    }
+
     public class ConfigModel : Object, Json.Serializable {
 
         private static ConfigModel _instance;
@@ -199,7 +204,82 @@ namespace SwayNotificatonCenter {
         /** Whether sounds for urgent notifications should be played when dnd is active or not */
         public bool dnd_play_urgent_sound { get; set; default = true; }
 
+        /** Categories settings */
+        // Json.object_deserialization complains about this attribute, ignore it.
+        public GLib.HashTable<string, Category> categories {
+            get;
+            private set;
+            default = new GLib.HashTable<string, Category> (str_hash, str_equal);
+        }
+        /** Dummy variable used to trick the deserialization function (see below) */
+        private bool categories_settings { get; set; }
+
+
         /* Methods */
+
+        /**
+         * Selects the deserialization method based on the property name.
+         * Needed to parse those parameters of complex types like hashtables,
+         * which are not natively supported by the default deserialization function.
+         */
+        public override bool deserialize_property (string property_name,
+                                                   out Value value,
+                                                   GLib.ParamSpec pspec,
+                                                   Json.Node property_node) {
+            switch (property_name) {
+                case "categories-settings" :
+                    value = true;
+                    return extract_categories (property_node);
+                default:
+                    // Handles all other properties
+                    return default_deserialize_property (
+                        property_name, out value, pspec, property_node);
+            }
+        }
+
+        /**
+         * Extracts categories settings from the config and adds them to the holder table.
+         */
+        private bool extract_categories (Json.Node categories_node) {
+            if (categories_node.get_node_type () != Json.NodeType.OBJECT) {
+                stderr.printf ("categories-settings is not a json object\n");
+                return false;
+            }
+            var categories_object = categories_node.get_object ();
+
+            GLib.HashTable<string, Category> tmp = new GLib.HashTable<string, Category> (str_hash, str_equal);
+
+            foreach (var category_name in categories_object.get_members ()) {
+                if (categories_object.get_member (category_name) .get_node_type () != Json.NodeType.OBJECT) {
+                    stderr.printf ("%s category is not a json object, skipping...\n", category_name);
+                    continue;
+                }
+                var category_object = categories_object.get_member (category_name) .get_object ();
+
+                Category category = new Category ();
+                
+                foreach (var property_name in category_object.get_members ()) {
+                    switch (property_name) {
+                        case "sound-file" :
+                            category.sound_file = category_object.get_member (property_name).get_string ();
+                            break;
+                        case "icon-name" :
+                            category.icon_name = category_object.get_member (property_name).get_string ();
+                            //stdout.printf ("%s -> %s: %s\n", category_name, property_name, category_object.get_member (property_name).get_string ());
+                            break;
+                        default:
+                            stderr.printf ("Unknown member %s in category %s\n", property_name, category_name);
+                            break;
+                    }
+                }
+
+                tmp.insert (category_name, category);
+            }
+
+            categories = tmp;
+
+            return true;
+        }
 
         /**
          * Called when `Json.gobject_serialize (ConfigModel.instance)` is called
