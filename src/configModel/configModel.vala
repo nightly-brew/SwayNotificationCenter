@@ -254,7 +254,7 @@ namespace SwayNotificatonCenter {
                     stderr.printf ("%s category is not a json object, skipping...\n", category_name);
                     continue;
                 }
-                var category_object = categories_object.get_member (category_name) .get_object ();
+                var category_object = categories_object.get_member (category_name).get_object ();
 
                 Category category = new Category ();
                 
@@ -265,7 +265,6 @@ namespace SwayNotificatonCenter {
                             break;
                         case "icon-name" :
                             category.icon_name = category_object.get_member (property_name).get_string ();
-                            //stdout.printf ("%s -> %s: %s\n", category_name, property_name, category_object.get_member (property_name).get_string ());
                             break;
                         default:
                             stderr.printf ("Unknown member %s in category %s\n", property_name, category_name);
